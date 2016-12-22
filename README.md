@@ -1,5 +1,7 @@
-# XParticle
-A really simple Unity3D/DirectX 11 particle system using compute shaders to handle millions of particles.
+# Particle Swarm in SteamVR
 
-![](https://github.com/antoinefournier/XParticle/blob/master/readme_img_1.png)
-![](https://github.com/antoinefournier/XParticle/blob/master/readme_img_2.png)
+Originaly modifed from https://github.com/antoinefournier/XParticle.
+
+This provided a particle system using compute shaders to handle the particle computation on the GPU.
+
+This project will convert this to a SteamVR project and introduce flocking logic to the particles. 
