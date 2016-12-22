@@ -1,0 +1,45 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Particle's data
+struct Particle
+{
+	float3 position;
+	float3 velocity;
+};
+
+// Particle's data, shared with the shader
+RWStructuredBuffer<Particle> particleBuffer;
+
+// Variables set from the CPU
+float deltaTime;		//	Time btn frames 
+float3 wandPosition;	//	wand position
+
+//	There are 256 particles currently
+[numthreads(256, 1, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+	//	Delta is the wand position minus the particleBuffer
+	float3 delta = wandPosition - particleBuffer[id.x].position;
+	//	Direction to go in is the normalization of the delta
+	float3 dir = normalize(delta);
+	float sqlength = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+
+	//	Check collisions with the controller
+	/*if (length(wandPosition - particleBuffer[id.x].velocity * deltaTime - particleBuffer[id.x].position) < 0.1f )
+	{
+		particleBuffer[id.x].velocity = 0.0f;
+	}*/
+
+	//	Update velocity
+	particleBuffer[id.x].velocity += 0.1f * sqlength * dir;
+
+	//	If velocity is greater than 5, cap the velocity
+	if (length(particleBuffer[id.x].velocity) > 5.0f)
+	{
+		particleBuffer[id.x].velocity = normalize(particleBuffer[id.x].velocity) * 5.0f;
+	}
+
+	//	Update positions
+	particleBuffer[id.x].position += particleBuffer[id.x].velocity * deltaTime;
+}
